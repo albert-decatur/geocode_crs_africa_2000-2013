@@ -1,0 +1,222 @@
+commit 08e43652201455c1d6e14f02ddfdb0834ffed880
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Tue Mar 24 11:41:48 2015 -0400
+
+    add code rule (tslg) counts to counts.csv
+
+commit 668cadbd6358df600a2b3fe2eac53259ef304759
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Tue Mar 24 10:56:33 2015 -0400
+
+    rm dups where count_recipient was blank in one case and not blank in another
+    NB: missing *some* uniq code rules - not many
+    $ cat output/counts.csv | sed '1d' | mawk -F, '{print $1}' | sort | uniq | parallel 'match=$(grep -E "^\b{}\b" output/counts.csv);count=$( echo "$match" | wc -l ); if [[ $count -gt 1 ]]; then echo "$match" | mawk -F, "{if(\$4 ~ /^$/)print \$0}"; fi' > /tmp/yo
+
+commit a653b393130f27f6d111d1f53c3c2323478bc2bf
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Tue Mar 24 10:27:08 2015 -0400
+
+    get the count of each code rule (tslg combo)
+    $ cat input/w_md5.txt | sed '1d' | mawk -F"|" '{print $1}' | sortfreq > /tmp/count
+
+commit c92c9e90d597957003d27258787b82cff58fe1f7
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Tue Mar 24 10:13:34 2015 -0400
+
+    move
+
+commit 04963037671d7e249c7488e320c10b705ecf2d39
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Tue Mar 24 10:13:14 2015 -0400
+
+    rename
+
+commit d7a9e3aadf9c4a24775fbee3afbf7d1bb5253191
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Tue Mar 24 10:13:05 2015 -0400
+
+    change header
+
+commit 9adee4691dd1356fee0bcec58f85d607b0a707a9
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Tue Mar 24 10:11:47 2015 -0400
+
+    add recipient count to join
+    NB: recipient count just looks for whether the text of the CRS recipientname case insensitive matches the spatialtext output.
+    does not account for differences in spelling, language
+    
+    $ cat ../input/w_md5.txt | sed '1d'| mawk -F"|" '{OFS="|";print $1,$3}'|parallel --gnu 'md5=$( echo {} | mawk -F"|" "{print \$1"} ); joinrecord=$( grep -E ",${md5}," join.csv ); territorycount=$( echo "$joinrecord" | mawk -F, "{print \$4}" ); if [[ $territorycount -gt 0 ]]; then territories=$( cat out/$( echo "$joinrecord" | mawk -F, "{print \$3}") | mawk -F, "{print \$1}" ); crsrecipient=$( echo {} | mawk -F"|" "{print \$2}" ); countrecipient=$( grep -iFf <(echo "$territories") <(echo "$crsrecipient") | wc -l ); else countrecipient=0; fi; echo -e "$countrecipient|"$md5 >> /tmp/foo'
+
+commit ade266b9037a3ab8a845f8622fa3ab3be08b56f5
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Fri Mar 20 13:33:38 2015 -0400
+
+    delete 15 code rules that did not join - small problem
+
+commit 77a59b22f58289c263a4b3ceea91939c007dbe15
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Fri Mar 20 13:32:13 2015 -0400
+
+    get in one file count of tslg, md5 of tlsg, id for spatialtext output of the tslg, count of territories mentioned, count of subnational mentioned
+
+commit 33dfcd5709157bfaf42d178dca40748ecaa1c347
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Fri Mar 20 12:56:14 2015 -0400
+
+    counts of placenames, by territory vs subnational, for each code rule tslg
+
+commit f3519b7376be02b104b9f079610afcafbab36624
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Fri Mar 20 11:52:09 2015 -0400
+
+    w/ md5 to identify code rules of t/s/l/g
+
+commit e3a998601125f65737f6b2ee01cfe3240ab74690
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Thu Mar 19 16:50:59 2015 -0400
+
+    as pipe delimlited
+
+commit 6837aa31fd757d704234251fce49eb90614f5cea
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Wed Mar 18 16:58:00 2015 -0400
+
+    Revert "for projects with either territory mention or subnational mention get joined counts of each"
+    
+    This reverts commit 88b26c72a43c662a882db85b6ccc7ea9c29617dd.
+    
+    Conflicts:
+    	scratch/join.csv
+    
+    go back
+
+commit 8b6ee9c483e7bbf685a47f66d6b9251f90773918
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Wed Mar 18 16:56:19 2015 -0400
+
+    Revert "better name"
+    
+    This reverts commit c6f462fbe4615de3df5fbeef9e57b513d07f8953.
+    
+    go back
+
+commit a1b3c3c5eb9a9b6bae2b8e8c5a493fc982fc697c
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Wed Mar 18 16:26:25 2015 -0400
+
+    as TSV
+
+commit c6f462fbe4615de3df5fbeef9e57b513d07f8953
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Wed Mar 18 16:24:14 2015 -0400
+
+    better name
+
+commit 88b26c72a43c662a882db85b6ccc7ea9c29617dd
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Wed Mar 18 16:21:08 2015 -0400
+
+    for projects with either territory mention or subnational mention get joined counts of each
+    
+    $ csvjoin -t -c1,1 --outer count_territories.txt count_subnational.txt |s
+    ed 's:,:|:g'|pawk '{if($1 ~ /^$/)$1=$3;print $1,$2,$4}' > join.csv
+
+commit 8a400fbc59cac64e07ca86395b9087f3cb0f80db
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Wed Mar 18 16:03:41 2015 -0400
+
+    by ID, count number of terriroties and number of subnational placenames
+
+commit 4f5ab0840856c65ce950bdede88392f982ef4974
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Wed Mar 18 15:36:37 2015 -0400
+
+    add alt languages by using same coordinates as existing territories.
+    currate by hand
+
+commit 77bd598044840e4f61ca4c4bec67dedcf873dd93
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Wed Mar 18 15:27:18 2015 -0400
+
+    add more territories and demonyms
+
+commit fa589fcf92ac9b8964c7103728222015189d1710
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Wed Mar 18 14:57:52 2015 -0400
+
+    get list of terriroties - these are likely aid recipient nations and territories like islands.
+    essentially a precision 8
+
+commit d4644f922427116e6f32ce26a894105368eddeed
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Wed Mar 18 10:33:14 2015 -0400
+
+    remove headers
+
+commit a15d24fce09fac2eb17f702c83bb03c41014bd11
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Tue Mar 17 22:39:08 2015 -0400
+
+    rm files that were just header
+
+commit e359eab67f02854510bb1613fda41e49229b89d4
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Tue Mar 17 21:59:24 2015 -0400
+
+    n
+    rename
+
+commit e918a55b86abd62a420afa2a40c48803c02a75b9
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Tue Mar 17 21:51:49 2015 -0400
+
+    more spatialtext outs
+
+commit bdbf0c1fabc59a58f04a63228305a2e1a2bcd09d
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Mon Mar 16 22:20:42 2015 -0400
+
+    progress on SpatialText by sequential ID for uniq title/short/long/geog
+
+commit 9a12d8a7fcc079617c3b1e16267fedac54c30be9
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Thu Mar 12 14:08:41 2015 -0400
+
+    line number, includes any potential blanks, separator is pipe
+    $ nl -ba -s '|' uniq.txt |sponge uniq.txt
+
+commit ca918d5c0c73dc786158bc686de8678c5a04b992
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Thu Mar 12 13:53:04 2015 -0400
+
+    unique terms from uniq title/short/long/geog
+    
+    $ cat uniq.txt | sed '1d' | sed 's:|: :g;s:\s\+: :g' | tr ' ' '\n' | tr -d '[:punct:]' | grep  -vE "^\s*$" | grep -vE "^[0-9.-]+$" | awk '{print tolower($0)}' | grep -vE "[0-9]" | awk '{if(length($0) > 3)print $0}' | sort | uniq > terms.txt
+    
+    disadvantage is multi-term place names are possible.
+    advantage is speed
+
+commit 8a3057dd3ae6040c06fb8126634280c9c3a13c95
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Thu Mar 12 13:41:38 2015 -0400
+
+    correct header
+
+commit bff72f726ea405be4b57145ac6c11c441ae52336
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Thu Mar 12 12:59:03 2015 -0400
+
+    uniq title/short/long/geog
+
+commit e766883806894162295603507f64f7acc7a15e6a
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Fri Jan 23 16:36:25 2015 -0500
+
+    add zipped africa recipient country, year ge 2000 from crs2014-12-24
+    $ cat crs2014-12-24.txt | mawk -F'|' '{OFS="|";if($1 >= 2000)print $6,$10,$1,$43,$42,$54,$51}' | grep -E "^[^|]*\|(\bAfrica, regional\b|\bAlgeria\b|\bAngola\b|\bBenin\b|\bBotswana\b|\bBurkina Faso\b|\bBurundi\b|\bCameroon\b|\bCape Verde\b|\bCentral African Rep.\b|\bChad\b|\bComoros\b|\bCongo, Dem. Rep.\b|\bCongo, Rep.\b|\bCote d'Ivoire\b|\bDjibouti\b|\bEgypt\b|\bEquatorial Guinea\b|\bEritrea\b|\bEthiopia\b|\bGabon\b|\bGambia\b|\bGhana\b|\bGuinea\b|\bGuinea-Bissau\b|\bLesotho\b|\bLiberia\b|\bLibya\b|\bMadagascar\b|\bMalawi\b|\bMali\b|\bMauritania\b|\bMauritius\b|\bMorocco\b|\bMozambique\b|\bNamibia\b|\bNiger\b|\bNigeria\b|\bNorth of Sahara, regional\b|\bRwanda\b|\bSao Tome &​​ Principe\b|\bSenegal\b|\bSeychelles\b|\bSierra Leone\b|\bSomalia\b|\bSouth Africa\b|\bSouth of Sahara, regional\b|\bSouth Sudan\b|\bSt. Helena\b|\bSudan\b|\bSwaziland\b|\bTanzania\b|\bTogo\b|\bTunisia\b|\bUganda\b|\bZambia\b|\bZimbabwe\b)\|" > /tmp/crs2014-12-24_africa_yrGE2000.txt
+
+commit a9f4df3ca5aa61c544123d0c97c1956acf45a59a
+Author: Albert Decatur <adecatur@aiddata.org>
+Date:   Fri Jan 23 16:35:54 2015 -0500
+
+    add .gitkeep to make dirs show up
